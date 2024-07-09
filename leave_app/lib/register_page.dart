@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
-
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -15,6 +14,34 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  Future<bool> postUsertoDB() async {
+    //url -
+    final url = Uri.parse('http://127.0.0.1:5000/register');
+    //Headers -
+    var headers = {'Content-Type': 'application/json'};
+    //Body -
+    var body = {
+      'firstname': firstNameController.text,
+      'lastname': lastNameController.text,
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+    //Work on this
+    http.Response response = await http.post(url, headers: headers, body: body);
+    //COnfirm wether the request was successfull
+    if (response.statusCode == 200) {
+      //We know the operation was successfull
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.body)));
+      return true;
+    } else {
+      //WE know the operation was not successfull
+      return false;
+    }
+  }
+
+  bool _isObscure = true; // Track password visibility
 
   String? validateEmail(String value) {
     // Check if email is valid using email_validator package
@@ -51,6 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: firstNameController,
                 decoration: const InputDecoration(
                   labelText: 'First Name',
+                  prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -65,6 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: lastNameController,
                 decoration: const InputDecoration(
                   labelText: 'Last Name',
+                  prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -79,6 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -87,11 +117,22 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 10.0),
               TextFormField(
                 controller: passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscure ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
+                  ),
+                  border: const OutlineInputBorder(),
                 ),
-                obscureText: true,
+                obscureText: _isObscure,
                 validator: (value) => validatePassword(value!),
               ),
               const SizedBox(height: 20.0),
