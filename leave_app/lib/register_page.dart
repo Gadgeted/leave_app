@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -47,7 +49,10 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               TextFormField(
                 controller: firstNameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
+                decoration: const InputDecoration(
+                  labelText: 'First Name',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'First Name is required';
@@ -55,9 +60,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 10.0),
               TextFormField(
                 controller: lastNameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
+                decoration: const InputDecoration(
+                  labelText: 'Last Name',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Last Name is required';
@@ -65,15 +74,23 @@ class _RegisterPageState extends State<RegisterPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 10.0),
               TextFormField(
                 controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => validateEmail(value!),
               ),
+              const SizedBox(height: 10.0),
               TextFormField(
                 controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
                 obscureText: true,
                 validator: (value) => validatePassword(value!),
               ),
